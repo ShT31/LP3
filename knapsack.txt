@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int knapsackDP(int capacity, vector<int>& weights, vector<int>& values, int n) {
+    // Creating a DP table with dimensions (n+1) x (capacity+1) initialized to 0
+    // dp[i][w] will store the maximum value for the first i items with weight limit w
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+
+    // Build the DP table in a bottom-up manner
+    for (int i = 1; i <= n; ++i) {         
+        for (int w = 1; w <= capacity; ++w) {
+            if (weights[i - 1] <= w) {
+                // If the item's weight is within the current capacity
+                // Choose the maximum of either including or excluding the item
+                dp[i][w] = max(dp[i - 1][w], values[i - 1] + dp[i - 1][w - weights[i - 1]]);
+            } else {
+                // If the item can't be included, carry forward the previous item's max value for this weight
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+    return dp[n][capacity];
+}
+
+int main() {
+    int n;         
+    int capacity; 
+
+    cout << "Enter the number of items: ";
+    cin >> n;
+
+    vector<int> weights(n), values(n);
+
+    cout << "Enter the weight and value of each item:\n";
+    for (int i = 0; i < n; ++i) {
+        cout << "Item " << i + 1 << endl;
+        cout << "Weight: ";
+        cin >> weights[i];
+        cout << "Value: ";
+        cin >> values[i];
+    }
+
+    cout << "Enter the maximum capacity of the knapsack: ";
+    cin >> capacity;
+
+    int maxValue = knapsackDP(capacity, weights, values, n);
+
+    cout << "Maximum value in knapsack: " << maxValue << endl;
+
+    return 0;
+}

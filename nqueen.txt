@@ -1,0 +1,120 @@
+#include <bits/stdc++.h> // Includes standard libraries
+using namespace std;
+
+bool isSafe(int r , int c , vector<vector<int>>&board , int n )
+{
+    int i = r ; 
+    int j = c;
+
+    // Check upper-left diagonal for conflicts
+    while(i>=0 && j>=0) {
+        if(board[i][j] == 1) return false;
+        i--; j--;
+    }
+    
+    i = r; j = c;
+
+    // Check lower-left diagonal for conflicts
+    while(i<n && j>=0) {
+        if(board[i][j] == 1) return false;
+        i++; j--;
+    }
+
+    // Check left row
+    i = r; j = c;
+    while(j>=0) {
+        if(board[i][j] == 1) return false;
+        j--;
+    }
+
+    // Check upper-right diagonal for conflicts
+    i = r; j = c;
+    while(i>=0 && j<n) {
+        if(board[i][j] == 1) return false;
+        i--; j++;
+    }
+
+    // Check lower-right diagonal for conflicts
+    i = r; j= c;
+    while(i<n && j<n) {
+        if(board[i][j] == 1) return false;
+        i++; j++;
+    }
+
+    // Check right row
+    i = r; j = c;
+    while(j<n) {
+        if(board[i][j] == 1) return false;
+        j++;
+    }
+
+    return true;
+}
+
+void printBoard(vector<vector<int>>& board) {
+    for (auto row : board) {
+        for (auto cell : row) {
+            cout << (cell ? "Q " : ". ") << " "; 
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void solve(int col, int col1, vector<vector<int>>& board, int n, int& cnt) {
+    if (col == n) { // If all queens are placed
+        cnt++; 
+        cout << "Solution " << cnt << " found:" << endl;
+        printBoard(board); 
+        return;
+    }
+
+    if (col == col1) { // If this column has the pre-placed queen, skip placing another queen
+        solve(col + 1, col1, board, n, cnt);
+        return;
+    }
+
+    // Try placing a queen in each row of the current column
+    for (int i = 0; i < n; i++) {
+        if (isSafe(i, col, board, n)) { 
+            board[i][col] = 1;
+            cout << "Placing queen at (" << i << ", " << col << "):" << endl;
+            printBoard(board); 
+            solve(col + 1, col1, board, n, cnt); 
+            board[i][col] = 0; 
+            cout << "Removing queen from (" << i << ", " << col << "):" << endl;
+            printBoard(board); 
+        }
+    }
+}
+
+int main() {
+    cout << "Enter the size of the matrix: ";
+    int n;
+    cin >> n;
+
+    vector<vector<int>> board(n, vector<int>(n, 0));
+    cout << "Enter the first queen's position (row and column): " << endl;
+    
+    int r, c;
+    cout << "Row: ";
+    cin >> r;
+    cout << "Column: ";
+    cin >> c;
+
+    board[r][c] = 1; // Place the first queen at the specified position
+
+    cout << "Initial board with queen placed at (" << r << ", " << c << "):" << endl;
+    printBoard(board); 
+
+    int cnt = 0; 
+    solve(0, c, board, n, cnt);
+
+    if (cnt == 0) {
+        cout << "No possible solutions for the given input." << endl;
+    } else {
+        cout << "Total solutions found: " << cnt << endl;
+    }
+
+    return 0;
+}

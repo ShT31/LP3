@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int fibonacci(int n)
+{
+    if (n <= 1)
+        return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+/**
+ * Time Complexity: O(2^n)
+ * Explanation: Each call to fibonacci(n) results in two additional recursive calls, 
+ * creating a binary tree of function calls. The resulting time complexity is exponential.
+ *
+ * Space Complexity: O(n)
+ * Explanation: The maximum depth of the recursion stack will be n, leading to linear space complexity.
+ */
+void recursive(int n)
+{
+    for (int i = 0; i < n; ++i)
+        cout << fibonacci(i) << " ";
+}
+
+/**
+ * Time Complexity: O(n)
+ * Explanation: Only a single loop runs n-2 times, making it linear in terms of time complexity.
+ *
+ * Space Complexity: O(1)
+ * Explanation: Only a constant amount of space is used, as the variables are overwritten each iteration.
+ */
+void iterative(int n)
+{
+    int a1 = 0;
+    int a2 = 1;
+
+    cout << a1 << " " << a2 << " ";
+
+    // Iteratively calculates and prints the next Fibonacci numbers up to n terms.
+    for (int i = 2; i < n; i++)
+    {
+        int a3 = a2 + a1; 
+        a1 = a2;
+        a2 = a3;
+        cout << a2 << " ";
+    }
+    cout << endl; 
+}
+
+int main()
+{
+    int n; 
+    cout << "Enter the number of terms" << endl;
+    cin >> n; 
+    recursive(n); 
+    cout << endl; 
+    iterative(n); 
+    return 0;
+}

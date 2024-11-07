@@ -1,0 +1,60 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, mean_absolute_error, confusion_matrix, classification_report
+df=pd.read_csv("emails.csv")
+df.head()
+
+df.isnull().sum()
+
+
+x = df.iloc[:, 1:-1]  # Select all columns except the first and last
+y = df.iloc[:, -1]    # Select the last column as the target variable
+
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=45)
+
+
+# Initialize KNN classifier model
+knn = KNeighborsClassifier()
+
+# Train the KNN model using the training data
+knn.fit(x_train, y_train)
+
+# Predict the target labels for the test data
+knn_pred = knn.predict(x_test)
+
+print("Accuracy of KNN : ", accuracy_score(y_test, knn_pred) * 100)  # Accuracy: Percentage of correct predictions
+print("Mean Absolute Error: ", mean_absolute_error(y_test, knn_pred))  # MAE: Average of absolute differences between predicted and actual values
+print("Recall: ", recall_score(y_test, knn_pred))  # Recall: The fraction of actual positives correctly identified
+print("Precision: ", precision_score(y_test, knn_pred))  # Precision: The fraction of predicted positives that are actually positive
+print("F1 Score: ", f1_score(y_test, knn_pred))  # F1 Score: The harmonic mean of Precision and Recall
+
+print("Classification Report of KNN:-")
+print(classification_report(y_test, knn_pred))
+print("Confusion Matrix of KNN:-")
+sns.heatmap(confusion_matrix(y_test, knn_pred), annot=True)
+
+
+# Initialize SVM classifier model
+svm = SVC()
+
+# Train the SVM model using the training data
+svm.fit(x_train, y_train)
+
+# Predict the target labels for the test data using SVM
+svm_pred = svm.predict(x_test)
+
+print("\nAccuracy of SVM : ", accuracy_score(y_test, svm_pred) * 100)  # Accuracy: Percentage of correct predictions
+print("Mean Absolute Error: ", mean_absolute_error(y_test, svm_pred))  # MAE: Average of absolute differences between predicted and actual values
+print("Recall: ", recall_score(y_test, svm_pred))  # Recall: The fraction of actual positives correctly identified
+print("Precision: ", precision_score(y_test, svm_pred))  # Precision: The fraction of predicted positives that are actually positive
+print("F1 Score: ", f1_score(y_test, svm_pred))  # F1 Score: The harmonic mean of Precision and Recall
+
+
+print("Classification Report of SVM:-")
+print(classification_report(y_test, svm_pred))
+print("Confusion Matrix of SVM:-")
+sns.heatmap(confusion_matrix(y_test, svm_pred), annot=True)

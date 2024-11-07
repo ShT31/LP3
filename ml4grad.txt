@@ -1,0 +1,51 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def function(x):
+    return (x+3)**2
+
+def derivative(x):
+    return 2*(x+3)
+
+def gradient_descent(starting_point, learning_rate, iterations):
+    x = starting_point  # Initialize x with the starting point
+    points = []  # List to store the points where gradient descent steps occur
+
+    for i in range(iterations):
+        points.append(x)  # Append the current point to the points list
+        print("Iteration ", i+1)
+        print("x = ", x)  # Print the current value of x
+        
+        # Calculate the gradient at the current point
+        gradient = derivative(x)
+        x = x - learning_rate * gradient
+    
+    return x, points
+
+
+starting_point = 2 
+learning_rate = 0.1 
+iterations = 1000 
+
+final_x, points = gradient_descent(starting_point, learning_rate, iterations)
+
+print("The local minimum occurs at x = ", final_x)
+
+# Create a range of x values for plotting the function curve
+x_vals = np.linspace(-5, 5, 100)
+y_vals = function(x_vals)
+
+
+plt.plot(x_vals, y_vals, label='y = (x + 3)^2')
+
+# Plot the points where gradient descent took steps, shown in red
+plt.scatter(points, [function(x) for x in points], color='red', label='Gradient Descent Steps')
+
+plt.title('Gradient Descent Optimization')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.legend()
+
+plt.grid(True)
+
+plt.show()

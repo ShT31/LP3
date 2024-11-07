@@ -1,0 +1,36 @@
+pragma solidity ^0.8.0;
+
+contract Student3 {
+
+    struct Student {
+        uint rollNo;        
+        string name;       
+    }
+
+    // Create a dynamic array to store all students
+    Student[] public students;
+
+    // Mapping to store each student by their roll number for quick access
+    mapping (uint => Student) studentsMapping;
+
+    function addStudent(uint rollNo, string memory name) public {
+        students.push(Student(rollNo, name));
+        
+        // Store the Student in the mapping using their roll number as the key
+        studentsMapping[rollNo] = Student(rollNo, name);
+    }
+
+    function getStudent(uint _rollNo) public view returns (uint rollNo, string memory name) {
+        // Access the student from the mapping using the roll number key
+        return (studentsMapping[_rollNo].rollNo, studentsMapping[_rollNo].name);
+    }
+
+    function getStudent2(uint _rollNo) public view returns (uint rollNo, string memory name) {
+        for (uint i = 0; i < students.length; i++) {
+            if (students[i].rollNo == _rollNo) {
+                return (students[i].rollNo, students[i].name);
+            }
+        }
+        revert("Student not found");
+    }
+}

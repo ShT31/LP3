@@ -1,0 +1,41 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+df = pd.read_csv("sales_data_sample.csv", encoding="unicode_escape")
+df.head()
+
+df.isnull().sum()
+
+df.drop(['ADDRESSLINE2', 'STATE', 'POSTALCODE', 'TERRITORY'], axis=1, inplace=True)
+df.isnull().sum()
+
+X = df[['SALES', 'QUANTITYORDERED', 'PRICEEACH']]
+
+# Scaling the features to have zero mean and unit variance
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # Standardizing the data
+
+
+# List to store inertia values for different values of k (number of clusters)
+inertia = []
+K = range(1, 11)
+for k in K:
+    kmeans = KMeans(n_clusters=k, random_state=42)  # Create KMeans model with k clusters
+    kmeans.fit(X_scaled)  # Fit the model to the scaled data
+    inertia.append(kmeans.inertia_)  # Store the inertia (sum of squared distances to centroids)
+
+# Plotting the Elbow Method to visually determine the optimal number of clusters
+plt.figure(figsize=(8, 6))
+plt.plot(K, inertia, 'bo-') 
+plt.xlabel('Number of clusters (k)') 
+plt.ylabel('Inertia') 
+plt.title('Elbow Method for Optimal k')
+plt.show()
+
+
+optimal_k = 4
+kmeans = KMeans(n_clusters=optimal_k, random_state=42)
+df['Cluster'] = kmeans.fit_predict(X_scaled)
+print(df[['SALES', 'QUANTITYORDERED', 'PRICEEACH', 'Cluster']])

@@ -1,0 +1,22 @@
+pragma solidity ^0.8.0;
+
+contract Bank3 {
+
+    // Mapping to store balances of each address (user account)
+    mapping (address => uint) balances;
+
+    // 'public' means it can be called by anyone, and 'payable' allows it to receive Ether
+    function deposit() public payable {
+        balances[msg.sender] = balances[msg.sender] + msg.value;
+    }
+
+    function withdraw(uint amount) public {
+        require(amount <= balances[msg.sender], "Insufficient Balance");
+        balances[msg.sender] = balances[msg.sender] - amount;
+        payable(msg.sender).transfer(amount);
+    }
+
+    function checkBalance() public view returns (uint) {
+        return balances[msg.sender];
+    }
+}
